@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis Integral Voximplant — BaldeCash</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #f5f4f0; color: #1a1a1a; line-height: 1.7; }
+  .page { max-width: 1100px; margin: 0 auto; background: #fff; padding: 48px 40px; min-height: 100vh; }
+
+  .header { padding-bottom: 20px; border-bottom: 3px double #1a1a1a; margin-bottom: 40px; }
+  .header .kicker { font-family: -apple-system, 'Segoe UI', system-ui, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .header h1 { font-size: 28px; font-weight: 400; letter-spacing: -0.5px; }
+  .header .subtitle { font-size: 14px; color: #666; font-style: italic; margin-top: 6px; }
+
+  .section { margin-bottom: 48px; }
+  .section-num { font-family: -apple-system, system-ui, sans-serif; font-size: 12px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .section-head { font-size: 22px; font-weight: 400; color: #1a1a1a; padding-bottom: 8px; border-bottom: 1px solid #1a1a1a; margin-bottom: 8px; }
+  .section-desc { font-family: -apple-system, system-ui, sans-serif; font-size: 13px; color: #666; margin-bottom: 20px; }
+
+  .subsection { margin: 24px 0; }
+  .subsection-title { font-family: -apple-system, 'Segoe UI', system-ui, sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #999; margin-bottom: 12px; }
+
+  .data-table { width: 100%; border-collapse: collapse; font-family: -apple-system, 'Segoe UI', system-ui, sans-serif; font-size: 13px; margin: 12px 0; }
+  .data-table th { background: #1a1a1a; color: #fff; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .data-table td { padding: 8px 12px; border-bottom: 1px solid #ececec; }
+  .data-table tr:hover { background: #faf9f5; }
+  .data-table .r { text-align: right; }
+  .data-table .group-header td { background: #f5f4f0; font-weight: 600; font-size: 12px; color: #1a1a1a; text-transform: uppercase; letter-spacing: 0.3px; }
+  .data-table .highlight-row td { background: #fef9e7; font-weight: 600; }
+  .data-table .subtotal td { border-top: 2px solid #1a1a1a; font-weight: 600; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 20px 0; }
+  .kpi-card { background: #f9f8f4; border: 1px solid #ebeae3; border-radius: 6px; padding: 20px; text-align: center; }
+  .kpi-card .label { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #999; margin-bottom: 6px; }
+  .kpi-card .value { font-size: 28px; font-weight: 400; color: #1a1a1a; }
+  .kpi-card .sub { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: #999; margin-top: 4px; }
+  .kpi-card.accent { border-color: #1a1a1a; border-width: 2px; }
+
+  .kpi-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+
+  .footnote { font-family: -apple-system, system-ui, sans-serif; font-size: 12px; color: #666; font-style: italic; margin-top: 12px; padding: 12px 16px; background: #f9f8f4; border: 1px solid #ebeae3; border-radius: 4px; }
+
+  .warn-box { background: #fef9e7; border: 1px solid #fde68a; border-radius: 4px; padding: 16px 20px; margin: 16px 0; font-family: -apple-system, system-ui, sans-serif; font-size: 13px; }
+
+  .pending-box { background: #f0f4ff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 16px 20px; margin: 16px 0; font-family: -apple-system, system-ui, sans-serif; font-size: 13px; color: #1e40af; }
+  .pending-box strong { color: #1e3a8a; }
+
+  .bar-track { height: 18px; background: #ebeae3; border-radius: 3px; margin: 4px 0; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; background: #1a1a1a; }
+
+  .footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid #ececec; font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: #999; text-align: center; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="kicker">BaldeCash &middot; Analisis de canal</div>
+    <h1>Analisis Integral Voximplant</h1>
+    <div class="subtitle">Llamadas PSTN + WhatsApp HSM &middot; Cobranza &middot; Marzo&ndash;Mayo 2026</div>
+  </div>
+
+  <!-- ================================================================== -->
+  <!-- RESUMEN EJECUTIVO                                                   -->
+  <!-- ================================================================== -->
+  <div class="section">
+    <div class="section-num">Resumen ejecutivo</div>
+    <h2 class="section-head">Vista general del canal</h2>
+    <div class="section-desc">Voximplant opera dos subcanales: llamadas predictivas (PSTN) y mensajes WhatsApp (HSM). Ambos son 100% cobranza.</div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card accent">
+        <div class="label">Llamadas PSTN (mar&ndash;may)</div>
+        <div class="value">256,066</div>
+        <div class="sub">66,088 + 80,289 + 109,689</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Contestadas (mar&ndash;may)</div>
+        <div class="value">15,276</div>
+        <div class="sub">6.0% tasa de contacto promedio</div>
+      </div>
+      <div class="kpi-card accent">
+        <div class="label">WA HSM (feb&ndash;may)</div>
+        <div class="value">105,708</div>
+        <div class="sub">1,659 + 46,115 + 37,350 + 20,584</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">WA aceptados</div>
+        <div class="value">101,855</div>
+        <div class="sub">96.4% promedio</div>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="label">Costo PSTN (mar&ndash;may)</div>
+        <div class="value">$1,296</div>
+        <div class="sub">$344 + $457 + $495</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Clientes unicos (may)</div>
+        <div class="value">10,515</div>
+        <div class="sub">Mar 8,821 &middot; Abr 8,945</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Contestaron (may)</div>
+        <div class="value">2,729</div>
+        <div class="sub">Mar 1,988 &middot; Abr 2,462</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">Costo total (abr)</div>
+        <div class="value">$2,112</div>
+        <div class="sub">Kit + PSTN + WA + otros</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px;">
+      <div style="background:#f9f8f4;border-radius:8px;padding:20px;">
+        <div style="font-family:-apple-system,system-ui,sans-serif;font-size:13px;font-weight:600;color:#333;margin-bottom:12px;">Llamadas PSTN por mes</div>
+        <div style="position:relative;height:240px;"><canvas id="chartLlamadas"></canvas></div>
+      </div>
+      <div style="background:#f9f8f4;border-radius:8px;padding:20px;">
+        <div style="font-family:-apple-system,system-ui,sans-serif;font-size:13px;font-weight:600;color:#333;margin-bottom:12px;">Contestadas por mes</div>
+        <div style="position:relative;height:240px;"><canvas id="chartContestadas"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script>
+  (function(){
+    const labels = ['Marzo','Abril','Mayo'];
+    const ink = '#1a1a1a';
+    const stone = '#999';
+
+    // Llamadas por mes
+    new Chart(document.getElementById('chartLlamadas'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Total', data: [66088, 80289, 109689], backgroundColor: ink, borderRadius: 3 },
+          { label: 'Voicemail', data: [22184, 34184, 35264], backgroundColor: '#888', borderRadius: 3 },
+          { label: 'Rechazadas', data: [38044, 37695, 66475], backgroundColor: '#bbb', borderRadius: 3 },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { font: { family: '-apple-system,system-ui,sans-serif', size: 11 }, boxWidth: 12 } } },
+        scales: {
+          y: { beginAtZero: true, ticks: { font: { size: 11 }, callback: v => v >= 1000 ? (v/1000)+'K' : v } },
+          x: { ticks: { font: { size: 12 } } }
+        }
+      }
+    });
+
+    // Contestadas por mes
+    new Chart(document.getElementById('chartContestadas'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Contestadas', data: [3926, 5349, 6001], backgroundColor: '#2563eb', borderRadius: 3 },
+          { label: 'Cortas (≤5s)', data: [475, 673, 1097], backgroundColor: '#93c5fd', borderRadius: 3 },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { font: { family: '-apple-system,system-ui,sans-serif', size: 11 }, boxWidth: 12 } } },
+        scales: {
+          y: { beginAtZero: true, ticks: { font: { size: 11 } } },
+          x: { ticks: { font: { size: 12 } } }
+        }
+      }
+    });
+  })();
+  </script>
+
+  <!-- ================================================================== -->
+  <!-- SECCION 1: LLAMADAS                                                 -->
+  <!-- ================================================================== -->
+  <div class="section">
+    <div class="section-num">1</div>
+    <h2 class="section-head">Llamadas PSTN</h2>
+    <div class="section-desc">Dialer predictivo &middot; Fuente: API searchCalls &middot; Marzo&ndash;Mayo 2026 (256,066 registros)</div>
+
+    <div class="subsection">
+      <div class="subsection-title">Metricas principales por mes</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Metrica</th><th class="r">Marzo</th><th class="r">Abril</th><th class="r">Mayo</th><th class="r">Total</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight-row"><td>Total llamadas</td><td class="r">66,088</td><td class="r">80,289</td><td class="r">109,689</td><td class="r">256,066</td></tr>
+          <tr><td>Contestadas</td><td class="r">3,926 (5.9%)</td><td class="r">5,349 (6.7%)</td><td class="r">6,001 (5.5%)</td><td class="r">15,276 (6.0%)</td></tr>
+          <tr><td>Voicemail (AMD)</td><td class="r">22,184 (33.6%)</td><td class="r">34,184 (42.6%)</td><td class="r">35,264 (32.1%)</td><td class="r">91,632 (35.8%)</td></tr>
+          <tr><td>Rechazadas</td><td class="r">38,044 (57.6%)</td><td class="r">37,695 (46.9%)</td><td class="r">66,475 (60.6%)</td><td class="r">142,214 (55.5%)</td></tr>
+          <tr><td>Otras (error, unavailable, busy)</td><td class="r">1,934 (2.9%)</td><td class="r">3,061 (3.8%)</td><td class="r">1,949 (1.8%)</td><td class="r">6,944 (2.7%)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Contactos efectivos y duracion</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Metrica</th><th class="r">Marzo</th><th class="r">Abril</th><th class="r">Mayo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Clientes unicos llamados</td><td class="r">8,821</td><td class="r">8,945</td><td class="r">10,515</td></tr>
+          <tr><td>Clientes que contestaron</td><td class="r">1,988</td><td class="r">2,462</td><td class="r">2,729</td></tr>
+          <tr class="highlight-row"><td>Tasa de contacto (por cliente)</td><td class="r">22.5%</td><td class="r">27.5%</td><td class="r">26.0%</td></tr>
+          <tr><td>Duracion promedio (contestadas)</td><td class="r">30.0s</td><td class="r">24.0s</td><td class="r">19.1s</td></tr>
+          <tr><td>Duracion promedio (todas)</td><td class="r">1.8s</td><td class="r">1.6s</td><td class="r">1.1s</td></tr>
+          <tr><td>Llamadas cortas (&le;5s)</td><td class="r">475 (12.1%)</td><td class="r">673 (12.6%)</td><td class="r">1,097 (18.3%)</td></tr>
+          <tr><td>Contactos efectivos (&gt;5s)</td><td class="r">3,451</td><td class="r">4,676</td><td class="r">4,904</td></tr>
+          <tr><td>Intentos promedio / cliente</td><td class="r">7.5</td><td class="r">9.0</td><td class="r">10.4</td></tr>
+        </tbody>
+      </table>
+      <div class="footnote">
+        <strong>Tendencias:</strong> Los intentos por cliente subieron de 7.5 a 10.4 (mas insistencia). La duracion promedio bajo de 30s a 19s (conversaciones mas cortas). Las llamadas cortas (&le;5s) subieron de 12% a 18% — mas clientes cuelgan inmediatamente.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Composicion de llamadas &mdash; Mayo 2026 (detalle API)</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Subgrupo</th><th class="r">Llamadas</th><th class="r">%</th><th class="r">Contestadas</th><th class="r">% contest.</th><th class="r">Costo</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight-row"><td><strong>Total mayo</strong></td><td class="r"><strong>109,689</strong></td><td class="r"><strong>100%</strong></td><td class="r"><strong>6,001</strong></td><td class="r"><strong>5.5%</strong></td><td class="r"><strong>$495</strong></td></tr>
+          <tr class="group-header"><td colspan="6">Por direccion</td></tr>
+          <tr><td>Salientes</td><td class="r">108,846</td><td class="r">99.2%</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">$473</td></tr>
+          <tr><td>Entrantes</td><td class="r">843</td><td class="r">0.8%</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">$22</td></tr>
+          <tr class="group-header"><td colspan="6">Por origen (salientes)</td></tr>
+          <tr><td>Sin campaign_id ni scenario_id</td><td class="r">71,201</td><td class="r">64.9%</td><td class="r">1,028</td><td class="r">1.4%</td><td class="r">$159</td></tr>
+          <tr><td>Escenario 57309 (Recordatorio Pago)</td><td class="r">14,667</td><td class="r">13.4%</td><td class="r">132</td><td class="r">0.9%</td><td class="r">$26</td></tr>
+          <tr><td>Escenario 59948</td><td class="r">4,074</td><td class="r">3.7%</td><td class="r">859</td><td class="r">21.1%</td><td class="r">$53</td></tr>
+          <tr><td>Escenarios 59657&ndash;59660 (4 escenarios)</td><td class="r">7,116</td><td class="r">6.5%</td><td class="r">1,506</td><td class="r">21.2%</td><td class="r">$89</td></tr>
+          <tr><td>Escenarios 59820&ndash;59822 (3 escenarios)</td><td class="r">3,767</td><td class="r">3.4%</td><td class="r">818</td><td class="r">21.7%</td><td class="r">$49</td></tr>
+          <tr><td>Escenario 59652 + otros menores</td><td class="r">8,021</td><td class="r">7.3%</td><td class="r">1,658</td><td class="r">20.7%</td><td class="r">$119</td></tr>
+          <tr class="group-header"><td colspan="6">Por campo campaign_id</td></tr>
+          <tr><td>Con campaign_id</td><td class="r">37,645</td><td class="r">34.3%</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
+          <tr><td>Sin campaign_id</td><td class="r">72,044</td><td class="r">65.7%</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
+        </tbody>
+      </table>
+      <div class="footnote">
+        <strong>71,201 llamadas sin campaign ni scenario:</strong> Son marcaciones automaticas del dialer que no conectaron (1.4% tasa de contacto). El sistema marca, detecta voicemail/rechazo y no registra escenario. Cuestan $159 ($0.002/call &mdash; basicamente cargo de AMD).<br>
+        <strong>Escenarios con ~21% de contacto:</strong> Los escenarios 59948, 59657-59660, 59820-59822 y 59652 tienen tasas de contacto del 21-24%, mucho mas altas que el promedio. Estos corresponden a llamadas que llegan a ejecutar un IVR y conectar con el cliente.<br>
+        <strong>campaign_id vs scenario_id:</strong> Son campos independientes. Una llamada puede tener ambos, uno, o ninguno. Los 37,645 con campaign_id son cercanos a los 34,800 "campaign items" del endpoint agentCampaigns.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Por producto financiado &mdash; Marzo (CSV con metadata)</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Producto</th><th class="r">Llamadas</th><th class="r">%</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Laptop</td><td class="r">9,079</td><td class="r">71.3%</td></tr>
+          <tr><td>Tablet</td><td class="r">2,281</td><td class="r">17.9%</td></tr>
+          <tr><td>Celular</td><td class="r">1,117</td><td class="r">8.8%</td></tr>
+          <tr><td>Bachiller</td><td class="r">141</td><td class="r">1.1%</td></tr>
+          <tr><td>Impresora</td><td class="r">63</td><td class="r">0.5%</td></tr>
+          <tr><td>Audifonos</td><td class="r">3</td><td class="r">0.0%</td></tr>
+          <tr class="subtotal"><td>Total con producto</td><td class="r">12,684</td><td class="r">19.2%</td></tr>
+        </tbody>
+      </table>
+      <div class="footnote">El 80.8% de las llamadas (53,405) no tienen campo de producto asignado &mdash; corresponden a llamadas de campanas sin metadata de cliente (campo "Sin campana").</div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Por tramo de mora &mdash; Marzo (CSV con metadata)</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Dias de atraso</th><th class="r">Llamadas</th><th class="r">%</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0 dias (dia de vencimiento)</td><td class="r">3,313</td><td class="r">26.1%</td></tr>
+          <tr><td>1&ndash;7 dias</td><td class="r">4,357</td><td class="r">34.3%</td></tr>
+          <tr><td>8&ndash;15 dias</td><td class="r">983</td><td class="r">7.7%</td></tr>
+          <tr><td>16&ndash;30 dias</td><td class="r">1,177</td><td class="r">9.3%</td></tr>
+          <tr><td>31+ dias</td><td class="r">2,854</td><td class="r">22.5%</td></tr>
+          <tr class="subtotal"><td>Total con tramo</td><td class="r">12,684</td><td class="r">19.2%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Volumen de llamadas: API vs factura</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Mes</th><th class="r">API searchCalls</th><th class="r">Factura</th><th>Nota</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Enero</td><td class="r" style="color:#999;">No extraido</td><td class="r">45</td><td>Recargas</td></tr>
+          <tr><td>Febrero</td><td class="r" style="color:#999;">No extraido</td><td class="r">115,501</td><td>Recargas</td></tr>
+          <tr><td>Marzo</td><td class="r">66,088</td><td class="r">63,798</td><td>Diff +2,290 (periodo de corte)</td></tr>
+          <tr><td>Abril</td><td class="r">80,289</td><td class="r">84,252</td><td>Diff -3,963 (posible rate limiting API)</td></tr>
+          <tr><td>Mayo</td><td class="r">109,689</td><td class="r">34,800 <span style="color:#999;font-size:10px;">(agentCampaigns)</span></td><td>34,800 son solo campaign items; API searchCalls captura todas</td></tr>
+        </tbody>
+      </table>
+      <div class="footnote"><strong>searchCalls vs agentCampaigns:</strong> La API searchCalls captura todas las llamadas PSTN (salientes + entrantes + escenarios). El endpoint agentCampaigns solo cuenta "campaign items" del dialer predictivo. En mar/abr ambas fuentes son similares. En mayo hay 109K llamadas totales pero solo 34,800 campaign items &mdash; las 72K restantes son marcaciones sin campaign_id (ver desglose arriba).</div>
+    </div>
+  </div>
+
+  <!-- ================================================================== -->
+  <!-- SECCION 2: MENSAJES WHATSAPP HSM                                    -->
+  <!-- ================================================================== -->
+  <div class="section">
+    <div class="section-num">2</div>
+    <h2 class="section-head">Mensajes WhatsApp HSM</h2>
+    <div class="section-desc">Templates de cobranza enviados via Voximplant Kit &middot; Fuente: DB voximplant_whatsapp_logs &middot; Feb&ndash;May 2026</div>
+
+    <div class="subsection">
+      <div class="subsection-title">Volumen y tasa de aceptacion por mes</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Mes</th><th class="r">Enviados</th><th class="r">Aceptados</th><th class="r">% aceptado</th><th class="r">Fallidos</th><th class="r">% fallido</th><th>Error principal</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Febrero</td><td class="r">1,659</td><td class="r">1,645</td><td class="r">99.16%</td><td class="r">14</td><td class="r" style="color:#c62828;">0.84%</td><td style="font-size:11px;">Template not sent to active conv (14)</td></tr>
+          <tr><td>Marzo</td><td class="r">46,115</td><td class="r">44,055</td><td class="r">95.53%</td><td class="r" style="color:#c62828;">2,060</td><td class="r" style="color:#c62828;">4.47%</td><td style="font-size:11px;">Active conv (1,686) + Unknown (372) + Server (2)</td></tr>
+          <tr><td>Abril</td><td class="r">37,350</td><td class="r">36,185</td><td class="r">96.88%</td><td class="r" style="color:#c62828;">1,165</td><td class="r" style="color:#c62828;">3.12%</td><td style="font-size:11px;">Active conv (1,018) + Unknown (147)</td></tr>
+          <tr><td>Mayo 1&ndash;26</td><td class="r">20,584</td><td class="r">19,970</td><td class="r">97.02%</td><td class="r">614</td><td class="r" style="color:#c62828;">2.98%</td><td style="font-size:11px;">Active conv (495) + Unknown (119)</td></tr>
+          <tr class="subtotal"><td>Total</td><td class="r">105,708</td><td class="r">101,855</td><td class="r">96.36%</td><td class="r">3,853</td><td class="r">3.64%</td><td></td></tr>
+        </tbody>
+      </table>
+      <div class="footnote">
+        <strong>Aceptado</strong> = WhatsApp recibio el mensaje para envio (HTTP 202). No confirma entrega al telefono.<br>
+        <strong>Error principal:</strong> "Message template could not be sent to active conversation" &mdash; se intento enviar un template cuando ya habia una conversacion abierta. Solucion: validar estado de conversacion antes de enviar.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Interaccion con asesores (chats Voximplant Kit)</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Mes</th><th class="r">HSM enviados</th><th class="r">Chats nuevos</th><th class="r">% respuesta</th><th class="r">Chats cerrados</th><th class="r">Chats perdidos</th><th class="r">% perdidos</th><th class="r">Tiempo resol.</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Febrero</td><td class="r">1,659</td><td class="r">1,096</td><td class="r">66.1%</td><td class="r">&mdash;</td><td class="r">95</td><td class="r">8.7%</td><td class="r">4d 6h</td></tr>
+          <tr><td>Marzo</td><td class="r">46,115</td><td class="r">7,561</td><td class="r">16.4%</td><td class="r">&mdash;</td><td class="r">883</td><td class="r">11.7%</td><td class="r">4d 19h</td></tr>
+          <tr><td>Abril</td><td class="r">37,350</td><td class="r">7,121</td><td class="r">19.1%</td><td class="r">&mdash;</td><td class="r">653</td><td class="r">9.2%</td><td class="r">3d 21h</td></tr>
+          <tr><td>Mayo 1&ndash;26</td><td class="r">20,584</td><td class="r">5,073</td><td class="r">24.6%</td><td class="r">5,070</td><td class="r">433</td><td class="r">8.5%</td><td class="r">2d 21h</td></tr>
+        </tbody>
+      </table>
+      <div class="footnote">
+        <strong>Chats nuevos</strong> = clientes que respondieron al template y generaron un chat con un asesor en Voximplant Kit.<br>
+        <strong>Chats perdidos</strong> = chats donde el cliente respondio pero ningun asesor atendio a tiempo.<br>
+        <strong>Tiempo resolucion</strong> = tiempo promedio desde apertura hasta cierre del chat. Ha mejorado de 4d 19h (mar) a 2d 21h (may).
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Templates por tipo</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Template</th><th class="r">Feb</th><th class="r">Mar</th><th class="r">Abr</th><th class="r">May</th><th>Descripcion</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>moderada_v2</td><td class="r">&mdash;</td><td class="r">36,246</td><td class="r">37,350</td><td class="r">20,584</td><td>Cobranza moderada (template principal)</td></tr>
+          <tr><td>moderada</td><td class="r">&mdash;</td><td class="r">9,037</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td>Version anterior (reemplazada)</td></tr>
+          <tr><td>gestores (4 templates)</td><td class="r">1,659</td><td class="r">832</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td>Templates de gestores individuales</td></tr>
+          <tr class="subtotal"><td>Total</td><td class="r">1,659</td><td class="r">46,115</td><td class="r">37,350</td><td class="r">20,584</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================================================================== -->
+  <!-- SECCION 3: COSTO DEL CANAL                                         -->
+  <!-- ================================================================== -->
+  <div class="section">
+    <div class="section-num">3</div>
+    <h2 class="section-head">Costo del canal</h2>
+    <div class="section-desc">Desglose de factura Voximplant &middot; Modelo prepago con recargas</div>
+
+    <div class="subsection">
+      <div class="subsection-title">Factura por concepto</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Concepto</th><th class="r">Ene</th><th class="r">Feb</th><th class="r">Mar</th><th class="r">Abr</th><th class="r">May</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Kit package</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">$300</td><td class="r">$600</td><td class="r">&mdash;</td></tr>
+          <tr><td>Services (incl. WA HSM)</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">$102</td><td class="r">$1,046</td><td class="r">&mdash;</td></tr>
+          <tr><td>Outbound PSTN Calls</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">$282</td><td class="r">$340</td><td class="r">&mdash;</td></tr>
+          <tr><td>Voicemail detection</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">$54</td><td class="r">$90</td><td class="r">&mdash;</td></tr>
+          <tr><td>Otros (TTS, phones, recording)</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">$18</td><td class="r">$36</td><td class="r">&mdash;</td></tr>
+          <tr class="highlight-row"><td><strong>Total</strong></td><td class="r"><strong>$1,000</strong></td><td class="r"><strong>$500</strong></td><td class="r"><strong>$756</strong></td><td class="r"><strong>$2,112</strong></td><td class="r"><strong>$1,500</strong></td></tr>
+          <tr><td colspan="6" style="font-size:11px;color:#999;">Ene/Feb/May = recargas depositadas. Mar/Abr = consumo real desglosado.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Costo unitario</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Metrica</th><th class="r">Marzo</th><th class="r">Abril</th><th>Nota</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Costo por llamada PSTN</td><td class="r">$0.0044</td><td class="r">$0.0040</td><td>$282/63,798 y $340/84,252</td></tr>
+          <tr><td>Costo por WA HSM</td><td class="r">$0.0022</td><td class="r">$0.0280</td><td>$102/46,115 y $1,046/37,350</td></tr>
+          <tr><td>Costo AMD (voicemail)</td><td class="r">$0.0024</td><td class="r">$0.0024</td><td>$54/22,184 (estimado)</td></tr>
+        </tbody>
+      </table>
+      <div class="warn-box">
+        <strong>Anomalia WA HSM:</strong> Marzo cobro $0.0022/msg, abril cobro $0.028/msg (12x mas caro). Posible causa: marzo fue periodo trial/promocional. Si abril es la tarifa real, marzo debio costar ~$1,291, no $102. Confirmar con Voximplant si hubo cambio de plan.
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================== -->
+  <!-- SECCION 4: EMBUDO DE CONVERSION                                    -->
+  <!-- ================================================================== -->
+  <div class="section">
+    <div class="section-num">4</div>
+    <h2 class="section-head">Embudo de conversion</h2>
+    <div class="section-desc">Flujo: Impactados &rarr; Contacto &rarr; Interaccion &rarr; Compromiso &rarr; Pago</div>
+
+    <div class="subsection">
+      <div class="subsection-title">Embudo de llamadas PSTN &mdash; Marzo&ndash;Mayo 2026</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Etapa</th><th class="r">Marzo</th><th class="r">Abril</th><th class="r">Mayo</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight-row"><td>1. Clientes impactados (llamados)</td><td class="r">8,821</td><td class="r">8,945</td><td class="r">10,515</td></tr>
+          <tr><td>2. Clientes que contestaron</td><td class="r">1,988 (22.5%)</td><td class="r">2,462 (27.5%)</td><td class="r">2,729 (26.0%)</td></tr>
+          <tr><td>3. Contactos efectivos (&gt;5s)</td><td class="r">~1,700 (19.3%)</td><td class="r">~2,100 (23.5%)</td><td class="r">~2,200 (20.9%)</td></tr>
+          <tr><td>4. Solicitudes gestionadas por llamada</td><td class="r">5,236</td><td class="r">4,595</td><td class="r">4,504</td></tr>
+          <tr><td>5. Compromisos de pago (morosos)</td><td class="r">1,661</td><td class="r">1,279</td><td class="r">1,226</td></tr>
+          <tr><td>6. Pagos de morosos contactados</td><td class="r">4,847</td><td class="r">4,002</td><td class="r">4,180</td></tr>
+          <tr class="highlight-row"><td>7. Monto recaudado (morosos)</td><td class="r">S/ 780,334</td><td class="r">S/ 627,989</td><td class="r">S/ 654,877</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:24px 0 32px;">
+      <!-- Embudo visual PSTN - Abril -->
+      <div style="background:#f9f8f4;border-radius:8px;padding:24px;">
+        <div style="font-family:-apple-system,system-ui,sans-serif;font-size:13px;font-weight:600;color:#333;margin-bottom:16px;">Embudo PSTN &mdash; Abril 2026</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:100%;background:#1a1a1a;color:#fff;text-align:center;padding:14px 0;font-family:-apple-system,system-ui,sans-serif;font-size:13px;border-radius:4px 4px 0 0;">
+            <strong>80,289</strong> llamadas realizadas
+          </div>
+          <div style="width:85%;background:#444;color:#fff;text-align:center;padding:12px 0;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
+            <strong>8,945</strong> clientes unicos <span style="opacity:0.7;">(100%)</span>
+          </div>
+          <div style="width:60%;background:#666;color:#fff;text-align:center;padding:12px 0;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
+            <strong>2,462</strong> contestaron <span style="opacity:0.7;">(27.5%)</span>
+          </div>
+          <div style="width:45%;background:#888;color:#fff;text-align:center;padding:12px 0;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
+            <strong>~2,100</strong> efectivos &gt;5s <span style="opacity:0.7;">(23.5%)</span>
+          </div>
+          <div style="width:38%;background:#999;color:#fff;text-align:center;padding:12px 0;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
+            <strong>1,279</strong> compromisos pago
+          </div>
+          <div style="width:30%;background:#bbb;color:#1a1a1a;text-align:center;padding:12px 0;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
+            <strong>4,002</strong> pagos morosos <span style="opacity:0.7;">(S/ 628K)</span>
+          </div>
+          <div style="width:22%;background:#ddd;color:#1a1a1a;text-align:center;padding:10px 0;font-family:-apple-system,system-ui,sans-serif;font-size:12px;font-weight:600;border-radius:0 0 4px 4px;">
+            90% de pagos morosos *
+          </div>
+        </div>
+      </div>
+
+      <!-- Embudo visual WA HSM - Abril -->
+      <div style="background:#f9f8f4;border-radius:8px;padding:24px;">
+        <div style="font-family:-apple-system,system-ui,sans-serif;font-size:13px;font-weight:600;color:#333;margin-bottom:16px;">Embudo WA HSM &mdash; Abril 2026</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:100%;background:#1a1a1a;color:#fff;text-align:center;padding:14px 0;font-family:-apple-system,system-ui,sans-serif;font-size:13px;border-radius:4px 4px 0 0;">
+            <strong>36,185</strong> HSM aceptados
+          </div>
+          <div style="width:82%;background:#2563eb;color:#fff;text-align:center;padding:12px 0;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
+            <strong>4,076</strong> clientes unicos <span style="opacity:0.7;">(100%)</span>
+          </div>
+          <div style="width:62%;background:#3b82f6;color:#fff;text-align:center;padding:12px 0;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
+            <strong>7,121</strong> respondieron (chats) <span style="opacity:0.7;">(19.1%)</span>
+          </div>
+          <div style="width:45%;background:#60a5fa;color:#1a1a1a;text-align:center;padding:12px 0;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
+            <strong>1,127</strong> compromisos pago <span style="opacity:0.7;">(15.8% de chats)</span>
+          </div>
+          <div style="width:35%;background:#93c5fd;color:#1a1a1a;text-align:center;padding:12px 0;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
+            <strong>3,156</strong> pagos morosos <span style="opacity:0.7;">(S/ 501K)</span>
+          </div>
+          <div style="width:25%;background:#dbeafe;color:#1a1a1a;text-align:center;padding:10px 0;font-family:-apple-system,system-ui,sans-serif;font-size:12px;font-weight:600;border-radius:0 0 4px 4px;">
+            71% de pagos morosos *
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Embudo de WhatsApp HSM &mdash; Marzo&ndash;Mayo 2026</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Etapa</th><th class="r">Marzo</th><th class="r">Abril</th><th class="r">Mayo 1&ndash;26</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight-row"><td>1. HSM aceptados</td><td class="r">44,055</td><td class="r">36,185</td><td class="r">19,970</td></tr>
+          <tr><td>2. Clientes unicos impactados</td><td class="r">4,700</td><td class="r">4,076</td><td class="r">2,791</td></tr>
+          <tr><td>3. Solicitudes unicas</td><td class="r">3,348</td><td class="r">3,020</td><td class="r">1,971</td></tr>
+          <tr><td>4. Clientes que respondieron (chats)</td><td class="r">7,561</td><td class="r">7,121</td><td class="r">5,073</td></tr>
+          <tr><td>&nbsp;&nbsp;&nbsp;Chats atendidos</td><td class="r">6,678 (88.3%)</td><td class="r">6,468 (90.8%)</td><td class="r">4,640 (91.5%)</td></tr>
+          <tr><td>&nbsp;&nbsp;&nbsp;Chats perdidos</td><td class="r" style="color:#c62828;">883 (11.7%)</td><td class="r" style="color:#c62828;">653 (9.2%)</td><td class="r" style="color:#c62828;">433 (8.5%)</td></tr>
+          <tr><td>5. Compromisos de pago (morosos)</td><td class="r">1,472</td><td class="r">1,127</td><td class="r">754</td></tr>
+          <tr><td>6. Pagos de morosos contactados</td><td class="r">3,925</td><td class="r">3,156</td><td class="r">2,071</td></tr>
+          <tr class="highlight-row"><td>7. Monto recaudado (morosos)</td><td class="r">S/ 646,764</td><td class="r">S/ 501,102</td><td class="r">S/ 327,200</td></tr>
+        </tbody>
+      </table>
+      <div class="footnote">
+        <strong>Metodologia:</strong> Se filtran solo pagos de solicitudes que estaban en <code>moroso_historico</code> durante el mes (clientes en mora). Luego se cruzan con las solicitudes contactadas por cada canal. <strong>No implica causalidad:</strong> un mismo moroso es contactado por multiples canales (llamada + WA Voximplant + WA Blip + email), por lo que el pago no es atribuible a un solo canal. Los porcentajes se traslapan (90% + 71% &gt; 100%).<br>
+        <strong>Pagos morosos por mes:</strong> Mar 5,067 (S/813K) · Abr 4,458 (S/697K) · May 4,719 (S/735K). Pagos totales (incluyendo clientes al dia): Mar 8,789 · Abr 8,588 · May 10,184.<br>
+        <strong>* Correlacion, no causalidad.</strong> Un pago = una cuota pagada.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Gestiones de cobranza por canal &mdash; contexto</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Canal de gestion</th><th class="r">Marzo</th><th class="r">Abril</th><th class="r">Mayo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>MENSAJE (Blip WA)</td><td class="r">90,026</td><td class="r">82,056</td><td class="r">74,081</td></tr>
+          <tr><td>LLAMADA</td><td class="r">76,628</td><td class="r">73,548</td><td class="r">66,937</td></tr>
+          <tr><td>MENSAJE VOXIMPLANT (WA HSM)</td><td class="r">44,055</td><td class="r">36,185</td><td class="r">23,532</td></tr>
+          <tr><td>MENSAJE WHATSAPP WEB</td><td class="r">6,821</td><td class="r">5,513</td><td class="r">5,688</td></tr>
+          <tr><td>Otros (bloqueo, infocorp, bienvenida, etc.)</td><td class="r">8,562</td><td class="r">7,646</td><td class="r">15,034</td></tr>
+          <tr class="subtotal"><td><strong>Total gestiones</strong></td><td class="r"><strong>226,092</strong></td><td class="r"><strong>204,948</strong></td><td class="r"><strong>185,272</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="footnote">
+        Voximplant WA HSM representa el 19-20% de las gestiones totales (mar-abr), bajando a 13% en mayo. El canal principal sigue siendo MENSAJE Blip (40%) seguido de LLAMADA (36%).
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================== -->
+  <!-- SECCION 5: EFECTIVIDAD COMPARADA                                    -->
+  <!-- ================================================================== -->
+  <div class="section">
+    <div class="section-num">5</div>
+    <h2 class="section-head">Efectividad comparada: Llamadas vs WhatsApp</h2>
+    <div class="section-desc">Comparacion de ambos subcanales &middot; Marzo&ndash;Mayo 2026</div>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Metrica</th><th class="r">Llamadas PSTN</th><th class="r">WhatsApp HSM</th><th>Ventaja</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Volumen total (mar&ndash;may)</td><td class="r">256,066</td><td class="r">103,565 <span style="color:#999;font-size:10px;">(sin feb)</span></td><td>Llamadas 2.5x mas</td></tr>
+        <tr><td>Tasa de contacto (llamada/aceptacion)</td><td class="r">6.0%</td><td class="r">96.4% (aceptados)</td><td style="color:#2563eb;font-weight:600;">WA &gt;&gt; PSTN</td></tr>
+        <tr><td>Interaccion con asesor</td><td class="r">~5.1% (est.)</td><td class="r">16&ndash;25%</td><td style="color:#2563eb;font-weight:600;">WA 3&ndash;5x mas</td></tr>
+        <tr><td>Costo PSTN total (mar&ndash;may)</td><td class="r">$1,296</td><td class="r">$1,148 (mar+abr)</td><td>Similar</td></tr>
+        <tr><td>Costo por contacto efectivo</td><td class="r">$0.085</td><td class="r">$0.058 <span style="color:#999;font-size:10px;">(abr real)</span></td><td style="color:#2563eb;font-weight:600;">WA 1.5x mas barato</td></tr>
+        <tr><td>Clientes unicos contactados</td><td class="r">1,988&ndash;2,729/mes</td><td class="r">5,073&ndash;7,561 chats/mes</td><td style="color:#2563eb;font-weight:600;">WA 2&ndash;3x mas alcance</td></tr>
+        <tr><td>Tiempo de respuesta</td><td class="r">Inmediato (sincrono)</td><td class="r">Asincrono (2d 21h&ndash;4d 19h)</td><td>Llamadas mas inmediato</td></tr>
+        <tr><td>Tendencia duracion</td><td class="r">30s &rarr; 19s (bajando)</td><td class="r">N/A</td><td style="color:#c62828;">Conversaciones cada vez mas cortas</td></tr>
+      </tbody>
+    </table>
+
+    <div class="footnote">
+      <strong>Conclusion:</strong> WhatsApp HSM genera 2&ndash;3x mas interacciones con asesores a menor costo por contacto. Las llamadas PSTN tienen tasa de contacto del 6% con tendencia a conversaciones mas cortas y mayor insistencia (10 intentos/cliente en mayo). El analisis definitivo requiere comparar ambos canales contra pagos generados (Seccion 4, pendiente).<br><br>
+      <strong>Costo por contacto PSTN:</strong> $1,296 / 15,276 contestadas = $0.085. Si solo &gt;5s: $1,296 / 13,031 = $0.099.<br>
+      <strong>Costo por contacto WA (abril):</strong> $1,046 / 7,121 chats = $0.147. Marzo (trial): $102 / 7,561 = $0.013.
+    </div>
+  </div>
+
+  <!-- ================================================================== -->
+  <!-- SECCION 6: DESGLOSE POR GESTOR                                     -->
+  <!-- ================================================================== -->
+  <div class="section">
+    <div class="section-num">6</div>
+    <h2 class="section-head">Desglose por gestor</h2>
+    <div class="section-desc">Rendimiento de colas PDS por gestor de cobranza &middot; Fuente: reportes PDS Voximplant Kit &middot; Feb&ndash;May 2026</div>
+
+    <div class="subsection">
+      <div class="subsection-title">Llamadas por gestor (colas PDS)</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Gestor</th><th class="r">Feb</th><th class="r">Mar</th><th class="r">Abr</th><th class="r">May 1&ndash;26</th><th class="r">Total</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Yosmar</td><td class="r">315</td><td class="r">516</td><td class="r">694</td><td class="r">105</td><td class="r"><strong>1,630</strong></td></tr>
+          <tr><td>Jahayra</td><td class="r">243</td><td class="r">583</td><td class="r">374</td><td class="r">99</td><td class="r"><strong>1,299</strong></td></tr>
+          <tr><td>Lidy</td><td class="r">243</td><td class="r">477</td><td class="r">368</td><td class="r">105</td><td class="r"><strong>1,193</strong></td></tr>
+          <tr><td>Julio</td><td class="r">307</td><td class="r">431</td><td class="r">353</td><td class="r">&mdash;</td><td class="r"><strong>1,091</strong></td></tr>
+          <tr><td>Rita</td><td class="r">&mdash;</td><td class="r">144</td><td class="r">356</td><td class="r">19</td><td class="r"><strong>519</strong></td></tr>
+          <tr><td>Liz</td><td class="r">&mdash;</td><td class="r">270</td><td class="r">77</td><td class="r">73</td><td class="r"><strong>420</strong></td></tr>
+          <tr><td>Janet</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">89</td><td class="r"><strong>89</strong></td></tr>
+          <tr class="subtotal"><td><strong>Total gestores</strong></td><td class="r"><strong>1,108</strong></td><td class="r"><strong>2,421</strong></td><td class="r"><strong>2,222</strong></td><td class="r"><strong>490</strong></td><td class="r"><strong>6,241</strong></td></tr>
+          <tr><td style="color:#999;">Pruebas / operativos (feb)</td><td class="r" style="color:#999;">550</td><td class="r" style="color:#999;">&mdash;</td><td class="r" style="color:#999;">&mdash;</td><td class="r" style="color:#999;">&mdash;</td><td class="r" style="color:#999;">550</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Llamadas abandonadas y perdidas por gestor</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Gestor</th><th class="r">Feb aband/lost</th><th class="r">Mar aband/lost</th><th class="r">Abr aband/lost</th><th class="r">May aband/lost</th><th class="r">Total aband</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Yosmar</td><td class="r">27 / 0</td><td class="r">37 / 1</td><td class="r">57 / 0</td><td class="r">14 / 0</td><td class="r">135</td></tr>
+          <tr><td>Jahayra</td><td class="r">31 / 0</td><td class="r">81 / 6</td><td class="r">80 / 1</td><td class="r">13 / 0</td><td class="r">205</td></tr>
+          <tr><td>Lidy</td><td class="r">21 / 3</td><td class="r">41 / 1</td><td class="r">36 / 1</td><td class="r">10 / 1</td><td class="r">108</td></tr>
+          <tr><td>Julio</td><td class="r">35 / 0</td><td class="r">47 / 0</td><td class="r">64 / 0</td><td class="r">&mdash;</td><td class="r">146</td></tr>
+          <tr><td>Rita</td><td class="r">&mdash;</td><td class="r">44 / 0</td><td class="r">55 / 1</td><td class="r">3 / 0</td><td class="r">102</td></tr>
+          <tr><td>Liz</td><td class="r">&mdash;</td><td class="r">39 / 4</td><td class="r">5 / 0</td><td class="r">8 / 0</td><td class="r">52</td></tr>
+          <tr><td>Janet</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">7 / 3</td><td class="r">7</td></tr>
+          <tr class="subtotal"><td><strong>Total</strong></td><td class="r"><strong>114 / 3</strong></td><td class="r"><strong>289 / 12</strong></td><td class="r"><strong>297 / 3</strong></td><td class="r"><strong>55 / 4</strong></td><td class="r"><strong>755</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Tiempo promedio de atencion por gestor</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Gestor</th><th class="r">Feb</th><th class="r">Mar</th><th class="r">Abr</th><th class="r">May</th><th>Observacion</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Yosmar</td><td class="r">3m 31s</td><td class="r">4m 15s</td><td class="r">2m 46s</td><td class="r">4m 52s</td><td>Consistente, 3&ndash;5 min</td></tr>
+          <tr><td>Jahayra</td><td class="r">6m 1s</td><td class="r">5m 43s</td><td class="r">11m 16s</td><td class="r">6m 6s</td><td>Pico en abril (11m)</td></tr>
+          <tr><td>Lidy</td><td class="r">1m 15s</td><td class="r">1m 26s</td><td class="r">1m 50s</td><td class="r">1m 42s</td><td>Mas rapida, ~1.5 min</td></tr>
+          <tr><td>Julio</td><td class="r">5m 20s</td><td class="r">8m 54s</td><td class="r">14m 59s</td><td class="r">&mdash;</td><td>Creciente, salio en mayo</td></tr>
+          <tr><td>Rita</td><td class="r">&mdash;</td><td class="r">13m 13s</td><td class="r">4m 44s</td><td class="r">18m 50s</td><td>Variable, picos altos</td></tr>
+          <tr><td>Liz</td><td class="r">&mdash;</td><td class="r">8m 54s</td><td class="r">1m 54s</td><td class="r">11m 26s</td><td>Variable</td></tr>
+          <tr><td>Janet</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">6m 57s</td><td>Nueva en mayo</td></tr>
+        </tbody>
+      </table>
+      <div class="footnote">
+        <strong>Tiempo de atencion</strong> = Avg. Handle Time del reporte PDS, promedio ponderado de todas las colas del gestor en el mes. Incluye tiempo de conversacion + after-call work.<br>
+        <strong>Lidy</strong> tiene el handle time mas bajo (~1.5 min) con volumen alto &mdash; posiblemente gestiones cortas o rapidas.<br>
+        <strong>Julio</strong> tenia handle times crecientes (5m &rarr; 15m) y salio del equipo en mayo. <strong>Janet</strong> ingreso en mayo como reemplazo.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Llamadas outbound directas por agente (reporte de agente)</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Agente</th><th class="r">Feb</th><th class="r">Mar</th><th class="r">Abr</th><th class="r">May</th><th>Rol</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Maria Fernanda Ferrer</td><td class="r">138</td><td class="r">242</td><td class="r">14</td><td class="r">3</td><td>Atencion al cliente</td></tr>
+          <tr><td>Stefania Mc Gregor</td><td class="r">162</td><td class="r">130</td><td class="r">8</td><td class="r">&mdash;</td><td>Atencion al cliente</td></tr>
+          <tr><td>Meylin Miyashiro</td><td class="r">10</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td></td></tr>
+          <tr><td>Yosmar Cadenas</td><td class="r">3</td><td class="r">3</td><td class="r">1</td><td class="r">1</td><td>Gestor cobranza</td></tr>
+          <tr class="subtotal"><td><strong>Total outbound directas</strong></td><td class="r"><strong>320</strong></td><td class="r"><strong>375</strong></td><td class="r"><strong>23</strong></td><td class="r"><strong>4</strong></td><td></td></tr>
+        </tbody>
+      </table>
+      <div class="footnote">
+        Llamadas outbound directas (no via dialer) bajaron drasticamente de ~350/mes (feb-mar) a ~15/mes (abr-may). Fernanda y Stefania hacian llamadas manuales de atencion al cliente; esa actividad se redujo en abril.
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================== -->
+  <!-- SECCION 7: HALLAZGOS Y RECOMENDACIONES                             -->
+  <!-- ================================================================== -->
+  <div class="section">
+    <div class="section-num">7</div>
+    <h2 class="section-head">Hallazgos y recomendaciones</h2>
+
+    <div class="subsection">
+      <div class="subsection-title">Hallazgos clave</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>#</th><th>Hallazgo</th><th>Impacto</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td><strong>Tasa de contacto PSTN estable en ~6%</strong> &mdash; 56% rechaza, 36% voicemail. Solo 1 de cada 17 llamadas conecta.</td><td>94% del gasto en llamadas no genera contacto</td></tr>
+          <tr><td>2</td><td><strong>Llamadas cortas subiendo: 12% &rarr; 18%</strong> &mdash; de 475 (mar) a 1,097 (may) llamadas &le;5s. Mas clientes cuelgan inmediato.</td><td>Contacto efectivo real baja de 5.2% a 4.5%</td></tr>
+          <tr><td>3</td><td><strong>Intentos/cliente creciendo: 7.5 &rarr; 10.4</strong> &mdash; mas insistencia, menos resultado. Duracion bajando de 30s a 19s.</td><td>Fatiga del cliente, menor engagement</td></tr>
+          <tr><td>4</td><td><strong>71K llamadas de mayo sin campaign ni scenario</strong> (65% del total) &mdash; marcaciones automaticas con 1.4% de contacto. Cuestan $159 pero casi no generan conversacion.</td><td>$159/mes en llamadas que no conectan</td></tr>
+          <tr><td>5</td><td><strong>WA HSM tiene 3x mas interaccion</strong> que PSTN (16-25% vs 5%) a menor costo.</td><td>Canal mas eficiente para engagement</td></tr>
+          <tr><td>6</td><td><strong>Anomalia de costo WA</strong> &mdash; marzo $0.002/msg vs abril $0.028/msg (12x diferencia).</td><td>$944 de diferencia mensual si se confirma tarifa abril</td></tr>
+          <tr><td>7</td><td><strong>Chats perdidos bajando</strong> &mdash; de 11.7% (mar) a 8.5% (may). Mejora en atencion.</td><td>Menos oportunidades perdidas</td></tr>
+          <tr><td>8</td><td><strong>3,853 HSM fallidos (3.6%)</strong> por enviar template a conversacion activa.</td><td>Oportunidad de mejora tecnica sencilla</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Recomendaciones</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>#</th><th>Accion</th><th>Prioridad</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td><strong>Completar el embudo con datos de pagos</strong> &mdash; cruzar clientes impactados con pagos para medir ROI real de cada subcanal.</td><td style="font-weight:600;color:#c62828;">Alta</td></tr>
+          <tr><td>2</td><td><strong>Validar tarifa WA HSM con Voximplant</strong> &mdash; confirmar si marzo fue trial y cual es la tarifa definitiva.</td><td style="font-weight:600;color:#c62828;">Alta</td></tr>
+          <tr><td>3</td><td><strong>Reducir intentos de llamada por cliente</strong> &mdash; limitar a 3 intentos/semana con horarios diferenciados.</td><td style="font-weight:600;">Media</td></tr>
+          <tr><td>4</td><td><strong>Validar conversacion activa antes de enviar HSM</strong> &mdash; evitar el 3.6% de fallos por envio a conversacion abierta.</td><td style="font-weight:600;">Media</td></tr>
+          <tr><td>5</td><td><strong>Evaluar reduccion de llamadas PSTN</strong> a favor de WA HSM si el embudo confirma mejor conversion por costo.</td><td>Baja (post analisis pagos)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    Balde K S.A.C. &middot; Analisis integral Voximplant &middot; Marzo&ndash;Mayo 2026<br>
+    Generado: junio 2026 &middot; Fuentes: Voximplant Kit API (searchCalls), voximplant_whatsapp_logs (DB), facturas Voximplant, dashboard Kit
+  </div>
+
+</div>
+</body>
+</html>
