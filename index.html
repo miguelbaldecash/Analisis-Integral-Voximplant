@@ -664,48 +664,6 @@
     </div>
   </div>
 
-  <!-- ================================================================== -->
-  <!-- SECCION 7: HALLAZGOS Y RECOMENDACIONES                             -->
-  <!-- ================================================================== -->
-  <div class="section">
-    <div class="section-num">7</div>
-    <h2 class="section-head">Hallazgos y recomendaciones</h2>
-
-    <div class="subsection">
-      <div class="subsection-title">Hallazgos clave</div>
-      <table class="data-table">
-        <thead>
-          <tr><th>#</th><th>Hallazgo</th><th>Impacto</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>1</td><td><strong>Tasa de contacto PSTN estable en ~6%</strong> &mdash; 56% rechaza, 36% voicemail. Solo 1 de cada 17 llamadas conecta.</td><td>94% del gasto en llamadas no genera contacto</td></tr>
-          <tr><td>2</td><td><strong>Llamadas cortas subiendo: 12% &rarr; 18%</strong> &mdash; de 475 (mar) a 1,097 (may) llamadas &le;5s. Mas clientes cuelgan inmediato.</td><td>Contacto efectivo real baja de 5.2% a 4.5%</td></tr>
-          <tr><td>3</td><td><strong>Intentos/cliente creciendo: 7.5 &rarr; 10.4</strong> &mdash; mas insistencia, menos resultado. Duracion bajando de 30s a 19s.</td><td>Fatiga del cliente, menor engagement</td></tr>
-          <tr><td>4</td><td><strong>71K llamadas de mayo sin campaign ni scenario</strong> (65% del total) &mdash; marcaciones automaticas con 1.4% de contacto. Cuestan $159 pero casi no generan conversacion.</td><td>$159/mes en llamadas que no conectan</td></tr>
-          <tr><td>5</td><td><strong>WA HSM tiene 3x mas interaccion</strong> que PSTN (16-25% vs 5%) a menor costo.</td><td>Canal mas eficiente para engagement</td></tr>
-          <tr><td>6</td><td><strong>Anomalia de costo WA</strong> &mdash; marzo $0.002/msg vs abril $0.028/msg (12x diferencia).</td><td>$944 de diferencia mensual si se confirma tarifa abril</td></tr>
-          <tr><td>7</td><td><strong>Chats perdidos bajando</strong> &mdash; de 11.7% (mar) a 8.5% (may). Mejora en atencion.</td><td>Menos oportunidades perdidas</td></tr>
-          <tr><td>8</td><td><strong>3,853 HSM fallidos (3.6%)</strong> por enviar template a conversacion activa.</td><td>Oportunidad de mejora tecnica sencilla</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="subsection">
-      <div class="subsection-title">Recomendaciones</div>
-      <table class="data-table">
-        <thead>
-          <tr><th>#</th><th>Accion</th><th>Prioridad</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>1</td><td><strong>Completar el embudo con datos de pagos</strong> &mdash; cruzar clientes impactados con pagos para medir ROI real de cada subcanal.</td><td style="font-weight:600;color:#c62828;">Alta</td></tr>
-          <tr><td>2</td><td><strong>Validar tarifa WA HSM con Voximplant</strong> &mdash; confirmar si marzo fue trial y cual es la tarifa definitiva.</td><td style="font-weight:600;color:#c62828;">Alta</td></tr>
-          <tr><td>3</td><td><strong>Reducir intentos de llamada por cliente</strong> &mdash; limitar a 3 intentos/semana con horarios diferenciados.</td><td style="font-weight:600;">Media</td></tr>
-          <tr><td>4</td><td><strong>Validar conversacion activa antes de enviar HSM</strong> &mdash; evitar el 3.6% de fallos por envio a conversacion abierta.</td><td style="font-weight:600;">Media</td></tr>
-          <tr><td>5</td><td><strong>Evaluar reduccion de llamadas PSTN</strong> a favor de WA HSM si el embudo confirma mejor conversion por costo.</td><td>Baja (post analisis pagos)</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
 
   <div class="footer">
     Balde K S.A.C. &middot; Analisis integral Voximplant &middot; Marzo&ndash;Mayo 2026<br>
